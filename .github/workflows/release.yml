@@ -89,7 +89,7 @@ jobs:
       - name: Print versions
         run: |
           # shellcheck disable=SC2086,SC2129
-          apt-get install pandoc
+          sudo apt-get install pandoc
 
           echo "# Build Versions" > dist/versions.md
           echo "datetime: ${{ steps.date.outputs.datetime }}" >> dist/versions.md
