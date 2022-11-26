@@ -88,11 +88,16 @@ jobs:
 
       - name: Print versions
         run: |
-          # shellcheck disable=SC2086
+          # shellcheck disable=SC2086,SC2129
+          apt-get install pandoc
+
           echo "# Build Versions" > dist/versions.md
           echo "datetime: ${{ steps.date.outputs.datetime }}" >> dist/versions.md
           echo "- jaoweb: [${{ steps.jaoweb-vars.outputs.SHORT_SHA }}](https://github.com/jaoafa/jaoweb/commit/${{ steps.jaoweb-vars.outputs.SHORT_SHA }})" >> dist/versions.md
           echo "- jaoweb-docs: [${{ steps.docs-vars.outputs.SHORT_SHA }}](https://github.com/jaoafa/jaoweb-docs/commit/${{ steps.docs-vars.outputs.SHORT_SHA }})" >> dist/versions.md
+
+          pandoc -s dist/versions.md -o dist/versions.html
+          rm dist/versions.md
 
       - name: Upload Pages-artifact
         uses: actions/upload-pages-artifact@v1
