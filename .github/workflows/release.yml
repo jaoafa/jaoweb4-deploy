@@ -17,7 +17,9 @@ jobs:
     steps:
       - name: Get current date
         id: date
-        run: echo "datetime=$(date +'%Y%m%d-%H%M%S')" >> $GITHUB_OUTPUT
+        run: |
+          # shellcheck disable=SC2086
+          echo "datetime=$(date +'%Y%m%d-%H%M%S')" >> $GITHUB_OUTPUT
 
       - name: Clone jaoafa/jaoweb
         uses: actions/checkout@v2
@@ -43,7 +45,9 @@ jobs:
 
       - name: Get yarn cache directory path
         id: yarn-cache-dir-path
-        run: echo "dir=$(yarn cache dir)" >> $GITHUB_OUTPUT
+        run: |
+          # shellcheck disable=SC2086
+          echo "dir=$(yarn cache dir)" >> $GITHUB_OUTPUT
 
       - name: Cache node_modules
         uses: actions/cache@v2
@@ -71,15 +75,19 @@ jobs:
       - name: Set jaoweb SHORT_SHA
         id: jaoweb-vars
         run: |
+          # shellcheck disable=SC2086
           echo "SHORT_SHA=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
 
       - name: Set jaoweb-docs SHORT_SHA
         id: docs-vars
         working-directory: ./content
-        run: echo "SHORT_SHA=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
+        run: |
+          # shellcheck disable=SC2086
+          echo "SHORT_SHA=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
 
       - name: Print versions
         run: |
+          # shellcheck disable=SC2086
           echo "datetime: ${{ steps.date.outputs.datetime }}" > dist/versions.txt
           echo "jaoweb: ${{ steps.jaoweb-vars.outputs.SHORT_SHA }}" >> dist/versions.txt
           echo "jaoweb-docs: ${{ steps.docs-vars.outputs.SHORT_SHA }}" >> dist/versions.txt
