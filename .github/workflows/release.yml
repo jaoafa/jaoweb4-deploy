@@ -32,6 +32,7 @@ jobs:
       - name: Clone jaoafa/jaoweb-docs
         uses: actions/checkout@v2
         with:
+          repository: jaoafa/jaoweb-docs
           path: content
 
       - name: Download authors.json & categories.json
