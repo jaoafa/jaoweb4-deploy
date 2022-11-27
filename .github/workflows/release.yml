@@ -41,7 +41,7 @@ jobs:
           wget -O content/blog/authors.json https://raw.githubusercontent.com/jaoafa/jaoweb/master/content/blog/authors.json
           wget -O content/blog/categories.json https://raw.githubusercontent.com/jaoafa/jaoweb/master/content/blog/categories.json
 
-      - uses: actions/setup-node@v2
+      - uses: actions/setup-node@v3
         with:
           node-version: 14
 
