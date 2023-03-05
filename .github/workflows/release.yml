@@ -21,58 +21,42 @@ jobs:
           # shellcheck disable=SC2086
           echo "datetime=$(date +'%Y%m%d-%H%M%S')" >> $GITHUB_OUTPUT
 
-      - name: Clone jaoafa/jaoweb
+      - name: Clone jaoafa/jaoweb4
         uses: actions/checkout@v3
         with:
-          repository: jaoafa/jaoweb
+          repository: jaoafa/jaoweb4
 
       - name: Remove content
         run: rm -rf content
 
-      - name: Clone jaoafa/jaoweb-docs
-        uses: actions/checkout@v3
+      # - name: Clone jaoafa/jaoweb-docs
+      #   uses: actions/checkout@v3
+      #   with:
+      #     repository: jaoafa/jaoweb-docs
+      #     path: content
+
+      # - name: Download authors.json & categories.json
+      #   run: |
+      #     mkdir -p content/blog
+      #     wget -O content/blog/authors.json https://raw.githubusercontent.com/jaoafa/jaoweb/master/content/blog/authors.json
+      #     wget -O content/blog/categories.json https://raw.githubusercontent.com/jaoafa/jaoweb/master/content/blog/categories.json
+
+      - name: Set up Node.js 18.x
+        uses: actions/setup-node@v3
         with:
-          repository: jaoafa/jaoweb-docs
-          path: content
-
-      - name: Download authors.json & categories.json
-        run: |
-          mkdir -p content/blog
-          wget -O content/blog/authors.json https://raw.githubusercontent.com/jaoafa/jaoweb/master/content/blog/authors.json
-          wget -O content/blog/categories.json https://raw.githubusercontent.com/jaoafa/jaoweb/master/content/blog/categories.json
-
-      - uses: actions/setup-node@v3
-        with:
-          node-version: 14
-
-      - name: Get yarn cache directory path
-        id: yarn-cache-dir-path
-        run: |
-          # shellcheck disable=SC2086
-          echo "dir=$(yarn cache dir)" >> $GITHUB_OUTPUT
-
-      - name: Cache node_modules
-        uses: actions/cache@v3
-        id: yarn-cache
-        with:
-          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
-          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-yarn-
+          node-version: 18
+          cache: 'npm'
 
       - name: Install dependencies
-        run: yarn
-
-      - name: Nuxt build
-        run: yarn cross-env NUXT_TELEMETRY_DISABLED=1 nuxt build
+        run: npm install
 
       - name: Nuxt generate
-        run: yarn cross-env NUXT_TELEMETRY_DISABLED=1 nuxt generate
+        run: npm run generate
 
-      - name: Check exists dist
+      - name: Check exists .output/public
         run: |
           ls -la
-          test -d dist
+          test -d .output/public
 
       - name: Set jaoweb SHORT_SHA
         id: jaoweb-vars
@@ -80,12 +64,12 @@ jobs:
           # shellcheck disable=SC2086
           echo "SHORT_SHA=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
 
-      - name: Set jaoweb-docs SHORT_SHA
-        id: docs-vars
-        working-directory: ./content
-        run: |
-          # shellcheck disable=SC2086
-          echo "SHORT_SHA=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
+      # - name: Set jaoweb-docs SHORT_SHA
+      #   id: docs-vars
+      #   working-directory: ./content
+      #   run: |
+      #     # shellcheck disable=SC2086
+      #     echo "SHORT_SHA=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
 
       - name: Print versions
         run: |
@@ -98,8 +82,8 @@ jobs:
           datetime: ${{ steps.date.outputs.datetime }}
 
           - jaoweb: [${{ steps.jaoweb-vars.outputs.SHORT_SHA }}](https://github.com/jaoafa/jaoweb/commit/${{ steps.jaoweb-vars.outputs.SHORT_SHA }})
-          - jaoweb-docs: [${{ steps.docs-vars.outputs.SHORT_SHA }}](https://github.com/jaoafa/jaoweb-docs/commit/${{ steps.docs-vars.outputs.SHORT_SHA }})
           EOF
+          # - jaoweb-docs: [${{ steps.docs-vars.outputs.SHORT_SHA }}](https://github.com/jaoafa/jaoweb-docs/commit/${{ steps.docs-vars.outputs.SHORT_SHA }})
 
           pandoc -s dist/versions.md -o dist/versions.html
           rm dist/versions.md
