@@ -22,7 +22,7 @@ jobs:
           echo "datetime=$(date +'%Y%m%d-%H%M%S')" >> $GITHUB_OUTPUT
 
       - name: Clone jaoafa/jaoweb4
-        uses: actions/checkout@v3
+        uses: actions/checkout@3df4ab11eba7bda6032a0b82a6bb43b11571feac # v4
         with:
           repository: jaoafa/jaoweb4
 
